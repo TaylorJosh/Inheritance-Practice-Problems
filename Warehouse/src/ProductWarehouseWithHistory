@@ -1,0 +1,48 @@
+public class ProductWarehouseWithHistory extends ProductWarehouse {
+    
+    private ChangeHistory changeHistoryObj;
+//    private double capacity;
+//    private String productName;
+//    private double balance;
+    
+    public ProductWarehouseWithHistory(String productName, double capacity, double initialBalance){
+        super(productName, capacity);
+        super.setBalance(initialBalance);
+        changeHistoryObj = new ChangeHistory();
+        changeHistoryObj.add(initialBalance);
+    }
+    
+    public void addToWarehouse(double amount){
+        if(amount>=0 && (super.getBalance()+amount)<=super.getCapacity()) {
+            super.setBalance(super.getBalance()+amount);
+        }
+        changeHistoryObj.add(super.getBalance());
+    }
+    
+    public double takeFromWarehouse(double amount){
+        if(amount>=0){
+            if((super.getBalance()-amount)>=0){
+                super.setBalance(super.getBalance()-amount);
+            } else {
+                double j = super.getBalance();
+                super.setBalance(0);
+                changeHistoryObj.add(super.getBalance());
+                return j;
+            }
+        }
+        changeHistoryObj.add(super.getBalance());
+        return amount;
+    }
+    
+    public String history(){
+        return changeHistoryObj.toString();
+    }
+    
+    public void printAnalysis(){
+        System.out.println("Product: " + super.getName());
+        System.out.println("History: " + history());
+        System.out.println("Largest amount of product: " + changeHistoryObj.maxValue());
+        System.out.println("Smallest amount of product: " + changeHistoryObj.minValue());
+        System.out.println("Average: " + changeHistoryObj.average());
+    }
+}
